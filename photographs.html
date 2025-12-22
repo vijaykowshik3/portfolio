@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vijay Kowshik | Filmmaker & Photographer</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
 
     <style>
         /* --- 1. GLOBAL RESET & BASICS --- */
@@ -16,7 +19,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* Hides default cursor */
+            cursor: none;
+            /* Hides default cursor */
         }
 
         body {
@@ -60,45 +64,94 @@
         /* --- 3. PRELOADER (Perfect Circle) --- */
         .preloader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            inset: 0;
             background: #000;
             z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            color: #fff;
             transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+
+            /* Background Animation */
+            background: radial-gradient(circle, #151515 0%, #000000 70%);
+            background-size: 150% 150%;
+            animation: loaderPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes loaderPulse {
+            0% {
+                background-position: 50% 50%;
+                opacity: 1;
+            }
+
+            50% {
+                background-position: 50% 40%;
+                opacity: 0.95;
+            }
+
+            100% {
+                background-position: 50% 50%;
+                opacity: 1;
+            }
+        }
+
+        body.loaded .preloader {
+            transform: translateY(-100%);
         }
 
         .loader-circle {
             width: 300px;
             height: 300px;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
-        .loader-text {
+        /* Rotating Ring Effect */
+        .loader-circle::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.3);
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-title {
             font-family: 'Montserrat', sans-serif;
             font-weight: 200;
-            font-size: 2rem;
             letter-spacing: 3px;
             text-transform: uppercase;
-            text-align: center;
+            font-size: 1.5rem;
+            /* Standard Size */
+            color: #fff;
+        }
+
+        .loader-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            color: #666;
         }
 
         .loader-counter {
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            margin-top: 20px;
-            color: #666;
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #888;
         }
 
         /* Slide curtain up when loaded */
@@ -188,9 +241,17 @@
             padding-left: 20px;
         }
 
-        .menu-btn.active .line:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
-        .menu-btn.active .line:nth-child(2) { opacity: 0; }
-        .menu-btn.active .line:nth-child(3) { transform: rotate(-45deg) translate(8px, -8px); }
+        .menu-btn.active .line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .menu-btn.active .line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-btn.active .line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
 
         /* --- 6. MAIN GALLERY --- */
         main {
@@ -240,7 +301,7 @@
 
         .caption {
             margin-top: 20px;
-            font-family: 'Playfair Display', serif;
+            font-family: 'Montserrat', sans-serif;
             font-size: 1.1rem;
             color: #fff;
             opacity: 0;
@@ -265,16 +326,89 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            nav { padding: 20px; }
-            main { padding: 100px 20px 20px 20px; }
-            .gallery-grid { grid-template-columns: 1fr; gap: 40px; }
-            .gallery-grid .gallery-item:nth-child(even) { margin-top: 0; }
-            .menu-links a { font-size: 2rem; }
-            .cursor { display: none; }
-            .loader-circle { width: 220px; height: 220px; }
+            nav {
+                padding: 20px;
+            }
+
+            main {
+                padding: 100px 20px 20px 20px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .gallery-grid .gallery-item:nth-child(even) {
+                margin-top: 0;
+            }
+
+            .menu-links a {
+                font-size: 2rem;
+            }
+
+            .cursor {
+                display: none;
+            }
+
+            .loader-circle {
+                width: 220px;
+                height: 220px;
+            }
+        }
+
+        /* --- 7. LIGHTBOX (MODAL) --- */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            /* BLUR BACKGROUND */
+            z-index: 5000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #lightbox.visible {
+            opacity: 1;
+            pointer-events: result;
+            pointer-events: all;
+        }
+
+        #lightbox-img {
+            max-width: 90%;
+            max-height: 90vh;
+            border: 2px solid #fff;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        #lightbox.visible #lightbox-img {
+            transform: scale(1);
+        }
+
+        #lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 5001;
+            transition: 0.3s;
+        }
+
+        #lightbox-close:hover {
+            transform: rotate(90deg) scale(1.2);
         }
     </style>
 </head>
+
 <body>
 
     <!-- 1. CUSTOM CURSOR -->
@@ -283,7 +417,8 @@
     <!-- 2. PRELOADER -->
     <div class="preloader">
         <div class="loader-circle">
-            <div class="loader-text">Vijay Kowshik</div>
+            <div class="loader-title">Vijay Kowshik</div>
+            <div class="loader-subtitle">Photographs</div>
             <div class="loader-counter">0 / 100</div>
         </div>
     </div>
@@ -292,9 +427,9 @@
     <nav>
         <div class="logo">
             <a href="index.html">Vijay Kowshik</a>
-            <span>Visual Designer</span>
+            <span>Filmmaker/ Editor/ Cinematographer</span>
         </div>
-        
+
         <div class="menu-btn" data-cursor="hover">
             <span class="line"></span>
             <span class="line"></span>
@@ -307,6 +442,7 @@
         <ul class="menu-links">
             <li><a href="photographs.html" data-cursor="hover">Photographs</a></li>
             <li><a href="films.html" data-cursor="hover">Films</a></li>
+            <li><a href="resume.html" data-cursor="hover">Resume</a></li>
             <li><a href="about.html" data-cursor="hover">About</a></li>
             <li><a href="contact.html" data-cursor="hover">Contact</a></li>
         </ul>
@@ -315,13 +451,13 @@
     <!-- 5. MAIN GALLERY CONTENT -->
     <main>
         <div class="gallery-grid">
-            
+
             <!-- Item 1 -->
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo1.jpg" alt="Art 1">
                 <div class="caption">
-                    L'affaire Editorial
-                    <span>Fashion</span>
+                    Interpretation of Heads - 1
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -329,8 +465,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo2.jpg" alt="Portrait 1">
                 <div class="caption">
-                    Nicobar x Aparna
-                    <span>Advertising</span>
+                    Interpretation of Heads - 2
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -338,8 +474,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo3.jpg" alt="Sabyasachi">
                 <div class="caption">
-                    Sabyasachi
-                    <span>Couture</span>
+                    Demetamorphosis
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -347,8 +483,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo4.jpg" alt="Monochrome">
                 <div class="caption">
-                    The Dark Beauty
-                    <span>Personal</span>
+                    Landscapes & Geometrics
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -356,8 +492,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo5.jpg" alt="Vogue">
                 <div class="caption">
-                    Vogue India
-                    <span>Cover Story</span>
+                    The Capsule of Childhood
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -365,8 +501,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo6.jpg" alt="Heritage">
                 <div class="caption">
-                    Royal Heritage
-                    <span>Editorial</span>
+                    The Divine Prayer
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -374,8 +510,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo7.jpg" alt="Portrait 2">
                 <div class="caption">
-                    Studio Series
-                    <span>Advertising</span>
+                    The Curious Touch and Divine Watch
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -383,8 +519,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo8.jpg" alt="Sabyasachi 2">
                 <div class="caption">
-                    Bridal Collection
-                    <span>Couture</span>
+                    Non Living Architecture
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -392,8 +528,8 @@
             <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo9.jpg" alt="Monochrome 2">
                 <div class="caption">
-                    Shadow Play
-                    <span>Personal</span>
+                    Diagonal and Time
+                    <span>Photography</span>
                 </div>
             </a>
 
@@ -402,22 +538,29 @@
                 <!-- Using photo5 again as an example, replace with photo10.jpg if you have it -->
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo10.jpg" alt="Vogue 2">
                 <div class="caption">
-                    Summer Edit
-                    <span>Cover Story</span>
+                    Goddess - Not in the Stilness
+                    <span>Photography</span>
                 </div>
             </a>
 
-             <!-- Item 11 -->
-             <a href="fashion.html" class="gallery-item" data-cursor="hover">
+            <!-- Item 11 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
                 <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo11.jpg" alt="Vogue 3">
                 <div class="caption">
-                    Winter Edit
-                    <span>Cover Story</span>
+                    Abstract Coincidenceof the Rene Magritte
+                    <span>Photography</span>
                 </div>
             </a>
 
         </div>
+        </div>
     </main>
+
+    <!-- LIGHTBOX CONTAINER -->
+    <div id="lightbox">
+        <div id="lightbox-close" data-cursor="hover">&times;</div>
+        <img id="lightbox-img" src="" alt="Full View">
+    </div>
 
     <!-- 6. SCRIPTS -->
     <script>
@@ -430,7 +573,7 @@
             let interval = setInterval(() => {
                 count++;
                 counterElement.innerText = `${count} / 100`;
-                
+
                 if (count >= 100) {
                     clearInterval(interval);
                     setTimeout(() => {
@@ -472,6 +615,41 @@
             el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
             el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
         });
+
+        // --- LIGHTBOX LOGIC ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault(); // Stop link from opening
+                const img = item.querySelector('img');
+                const src = img.src;
+
+                lightboxImg.src = src;
+                lightbox.classList.add('visible');
+            });
+        });
+
+        // Close functions
+        const closeLightbox = () => {
+            lightbox.classList.remove('visible');
+            setTimeout(() => lightboxImg.src = '', 500); // Clear after fade
+        };
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        // Escape check
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
     </script>
 </body>
+
 </html>
