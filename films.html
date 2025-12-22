@@ -1,364 +1,960 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Films | Vijay Kowshik</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Films | Vijay Kowshik</title>
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
 
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+    <!-- Lenis for Smooth Scroll (Premium Feel) -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
-body {
-    background: #050505;
-    color: #e0e0e0;
-    font-family: 'Montserrat', sans-serif;
-    overflow-x: hidden;
-}
+    <style>
+        /* --- 1. CORE SETTINGS --- */
+        :root {
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+            --ease-luxury: cubic-bezier(0.77, 0, 0.175, 1);
+            --color-bg: #050505;
+            --color-text: #e0e0e0;
+            --color-accent: #fff;
+            --color-muted: #888;
+        }
 
-a { text-decoration: none; color: inherit; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
 
-/* CURSOR */
-.cursor {
-    width: 40px; height: 40px;
-    border: 1px solid rgba(255,255,255,0.5);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: 0.15s;
-    mix-blend-mode: difference;
-}
-.cursor.hovered {
-    width: 60px; height: 60px;
-    background: rgba(255,255,255,0.2);
-}
+        body {
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
 
-/* PRELOADER */
-.preloader {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 1.2s cubic-bezier(0.77,0,0.175,1);
-}
-body.loaded .preloader { transform: translateY(-100%); }
+        /* Reveal content after loader */
+        main,
+        header,
+        nav {
+            opacity: 0;
+            transition: opacity 1.5s ease 0.5s;
+        }
 
-.loader-circle {
-    width: 300px;
-    height: 300px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.loader-title {
-    font-weight: 200;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-.loader-counter {
-    margin-top: 15px;
-    font-size: 0.8rem;
-    color: #888;
-}
+        body.ready main,
+        body.ready header,
+        body.ready nav {
+            opacity: 1;
+        }
 
-/* NAV */
-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    padding: 30px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-    mix-blend-mode: difference;
-}
-.logo { letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; }
-.logo span { display: block; font-size: 0.6rem; opacity: 0.6; margin-top: 4px; }
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
 
-.menu-btn {
-    width: 35px;
-    height: 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.menu-btn .line {
-    height: 1px;
-    background: #fff;
-    transition: 0.4s;
-}
-.menu-btn.active .line:nth-child(1) { transform: rotate(45deg) translate(8px,8px); }
-.menu-btn.active .line:nth-child(2) { opacity: 0; }
-.menu-btn.active .line:nth-child(3) { transform: rotate(-45deg) translate(8px,-8px); }
+        ul {
+            list-style: none;
+        }
 
-/* MENU */
-.menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: #080808;
-    transform: translateX(100%);
-    transition: transform 0.6s cubic-bezier(0.77,0,0.175,1);
-    z-index: 150;
-    display: flex;
-    align-items: center;
-    padding-left: 10%;
-}
-.menu-overlay.active { transform: translateX(0); }
-.menu-links a {
-    display: block;
-    font-size: 3rem;
-    font-weight: 200;
-    letter-spacing: 5px;
-    color: #444;
-    margin: 12px 0;
-}
-.menu-links a:hover { color: #fff; padding-left: 20px; }
+        /* --- 2. TYPOGRAPHY UTILITIES --- */
+        .font-serif {
+            font-family: 'Montserrat', sans-serif;
+        }
 
-/* FILMS */
-.films-container {
-    padding: 150px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 150px;
-}
+        .text-uppercase {
+            text-transform: uppercase;
+        }
 
-.film-item {
-    width: 90%;
-    max-width: 1000px;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: 0.8s ease;
-}
-.film-item.visible { opacity: 1; transform: translateY(0); }
+        .tracking-wide {
+            letter-spacing: 0.2em;
+        }
 
-.film-title {
-    font-size: 0.9rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-}
-.film-title::after {
-    content: '';
-    display: block;
-    width: 30px;
-    height: 1px;
-    background: #fff;
-    margin: 10px auto 0;
-}
+        .text-muted {
+            color: var(--color-muted);
+        }
 
-.video-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    cursor: pointer;
-}
-.video-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%) brightness(0.8);
-    transition: 0.6s;
-}
-.video-wrapper:hover img {
-    filter: grayscale(0%) brightness(1);
-    transform: scale(1.03);
-}
-.play-button {
-    position: absolute;
-    inset: 50%;
-    width: 60px;
-    height: 60px;
-    transform: translate(-50%,-50%);
-    border: 1px solid #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.play-button::before {
-    content: "▶";
-    margin-left: 4px;
-}
+        /* --- 3. CUSTOM CURSOR --- */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: difference;
+        }
 
-/* MODAL */
-.video-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.4s;
-    z-index: 20000;
-}
-.video-modal.active {
-    opacity: 1;
-    pointer-events: all;
-}
-.modal-content {
-    width: 80%;
-    max-width: 1200px;
-    aspect-ratio: 16/9;
-    position: relative;
-}
-.close-modal {
-    position: absolute;
-    top: -50px;
-    right: 0;
-    letter-spacing: 2px;
-    cursor: pointer;
-}
-iframe { width: 100%; height: 100%; border: none; }
+        .cursor.hovered {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            mix-blend-mode: difference;
+        }
 
-@media(max-width:768px){
-    .cursor{display:none;}
-    .menu-links a{font-size:2rem;}
-    .modal-content{width:95%;}
-}
-</style>
+        .cursor.video-hover {
+            width: 100px;
+            height: 100px;
+            background: transparent;
+            border: 1px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cursor.video-hover::after {
+            content: 'PLAY';
+            font-size: 0.8rem;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        /* --- PRELOADER --- */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+
+            /* Background Animation */
+            background: radial-gradient(circle, #151515 0%, #000000 70%);
+            background-size: 150% 150%;
+            animation: loaderPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes loaderPulse {
+            0% {
+                background-position: 50% 50%;
+                opacity: 1;
+            }
+
+            50% {
+                background-position: 50% 40%;
+                opacity: 0.95;
+            }
+
+            100% {
+                background-position: 50% 50%;
+                opacity: 1;
+            }
+        }
+
+        body.loaded .preloader {
+            transform: translateY(-100%);
+        }
+
+        .loader-circle {
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Rotating Ring Effect */
+        .loader-circle::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.3);
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 200;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            /* Standard Size */
+            color: #fff;
+        }
+
+        .loader-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .loader-counter {
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* --- 4. NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 500;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 0.6rem;
+            opacity: 0.6;
+            margin-top: 5px;
+        }
+
+        .menu-btn {
+            width: 40px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            z-index: 500;
+        }
+
+        .menu-btn .line {
+            width: 100%;
+            height: 1px;
+            background: #fff;
+            transition: 0.4s var(--ease-luxury);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0a0a0a;
+            z-index: 400;
+            transform: translateX(100%);
+            transition: transform 0.8s var(--ease-luxury);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 10%;
+        }
+
+        .menu-overlay.active {
+            transform: translateX(0);
+        }
+
+        .menu-links a {
+            font-size: 4rem;
+            font-weight: 100;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            display: block;
+            margin: 10px 0;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .menu-links a:hover {
+            color: #fff;
+            transform: translateX(20px);
+        }
+
+        .menu-btn.active .line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-btn.active .line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-btn.active .line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        /* --- 5. PAGE HERO --- */
+        header.page-header {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 5vw;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .hero-title i {
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            letter-spacing: 0.3em;
+            margin-bottom: 40px;
+            opacity: 0.6;
+        }
+
+        .scroll-indicator {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, #fff, transparent);
+            opacity: 0.5;
+        }
+
+        /* --- 6. FILM LIST (Staggered Layout) --- */
+        .film-section {
+            padding: 50px 0;
+            width: 100%;
+        }
+
+        .film-block {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1600px;
+            margin: 0 auto 200px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s var(--ease-out);
+        }
+
+        .film-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Alternate Order */
+        .film-block:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .film-visual {
+            width: 60%;
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .film-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s var(--ease-out), filter 0.5s;
+            filter: grayscale(100%);
+        }
+
+        .film-visual:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        .film-info {
+            width: 35%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .film-meta-top {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .film-name {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .film-desc {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #bbb;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .film-roles {
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .role-tag {
+            display: inline-block;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            border-radius: 50px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .role-tag:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- 7. SHORTS SECTION --- */
+        .shorts-section {
+            padding: 100px 0;
+            background: #080808;
+            border-top: 1px solid #111;
+        }
+
+        .section-head {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .section-head h2 {
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .shorts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 90%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .short-card {
+            position: relative;
+            aspect-ratio: 9/16;
+            overflow: hidden;
+            cursor: pointer;
+            group;
+        }
+
+        .short-visual {
+            width: 100%;
+            height: 100%;
+        }
+
+        .short-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: 0.8s var(--ease-out);
+        }
+
+        .short-card:hover .short-visual img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        .short-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            transform: translateY(100%);
+            transition: 0.5s var(--ease-luxury);
+        }
+
+        .short-card:hover .short-overlay {
+            transform: translateY(0);
+        }
+
+        .short-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .short-role {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        /* --- 8. VIDEO MODAL --- */
+        .video-modal {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .video-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-container {
+            width: 90%;
+            max-width: 1400px;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+        }
+
+        .shorts-mode .modal-container {
+            aspect-ratio: 9/16;
+            max-height: 90vh;
+            width: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+
+            .film-block,
+            .film-block:nth-child(even) {
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 100px;
+            }
+
+            .film-visual,
+            .film-info {
+                width: 100%;
+                padding: 0;
+            }
+
+            .film-info {
+                margin-top: 20px;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .cursor {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="cursor"></div>
+    <div class="cursor"></div>
 
-<div class="preloader">
-    <div class="loader-circle">
-        <div class="loader-title">Vijay Kowshik</div>
-        <div class="loader-title" style="font-size:0.7rem;margin-top:6px;">Films</div>
-        <div class="loader-counter">0 / 100</div>
+    <!-- PRELOADER -->
+    <div class="preloader">
+        <div class="loader-circle">
+            <div class="loader-title font-serif">Vijay Kowshik</div>
+            <div class="loader-subtitle">Films</div>
+            <div class="loader-counter">0 / 100</div>
+        </div>
     </div>
-</div>
 
-<nav>
-    <div class="logo">
-        <a href="index.html">Vijay Kowshik</a>
-        <span>Filmmaker</span>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <a href="index.html">Vijay Kowshik</a>
+            <span>Filmmaker/ Editor/ Cinematographer</span>
+        </div>
+        <div class="menu-btn" data-cursor="hover">
+            <span class="line"></span><span class="line"></span><span class="line"></span>
+        </div>
+    </nav>
+    <div class="menu-overlay">
+        <ul class="menu-links">
+            <li><a href="photographs.html">Photographs</a></li>
+            <li><a href="films.html">Films</a></li>
+            <li><a href="resume.html">Resume</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
     </div>
-    <div class="menu-btn" data-cursor="hover">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
+
+    <!-- Header -->
+    <header class="page-header">
+        <h1 class="hero-title font-serif">Motion <i>&</i> Emotion</h1>
+        <p class="hero-subtitle text-uppercase">Editing, Cinematography & Direction</p>
+        <div class="scroll-indicator"></div>
+    </header>
+
+    <main>
+
+        <!-- FEATURED FILMS SECTION -->
+        <section class="film-section">
+
+            <!-- Film Item 1 -->
+            <!-- Film Item 1 -->
+            <div class="film-block" id="spilaio">
+                <div class="film-visual" data-cursor="video" data-youtube-id="CQ1N7_YZ5oA">
+                    <!-- Placeholder: Cinematic Fashion Shot -->
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\film1.png" alt="L'affaire">
+                </div>
+                <div class="film-info">
+                    <div class="film-meta-top">
+                        <span>Architectural Film</span>
+                        <span>2025</span>
+                    </div>
+                    <h2 class="film-name font-serif">Spilaio</h2>
+                    <p class="film-desc">
+                        Set within the Pregame Concept Store and Bar, the film approaches architecture as a lived
+                        experience rather than a static object. The camera moves slowly through the space, paying
+                        attention to texture, proportion, and the quiet transitions between volumes. Arches, surfaces,
+                        and shadows are revealed gradually, allowing the atmosphere to unfold without interruption.
+                        The space is designed by Arpita Sharma, CEO of Atelier Astil, with a strong emphasis on
+                        materiality and spatial rhythm. My intention was to translate this language into
+                        film—maintaining restraint, continuity, and a sense of calm throughout the visual narrative.
+                        I was responsible for the film planning, direction, shot design, and editing, shaping Spilaio as
+                        a cohesive spatial journey. Each frame and cut is guided by the architecture itself, aiming to
+                        capture not only how the space looks, but how it feels when occupied.
+                        This film is an attempt to hold architecture in time—to let it breathe, pause, and speak
+                        quietly.
+
+                    </p>
+                    <div class="film-roles">
+                        <span class="role-tag">DIRECTION</span>
+                        <span class="role-tag">CINEMATOGRAPHY</span>
+                        <span class="role-tag">EDITING</span>
+                        <span class="role-tag">COLOR GRADE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Film Item 2 -->
+            <!-- Film Item 2 -->
+            <div class="film-block" id="casa-sereno">
+                <div class="film-visual" data-cursor="video" data-youtube-id="Af30_dzcsfM">
+                    <!-- Placeholder: Runway/Model Shot -->
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\film2.png" alt="CASA SERENO">
+                </div>
+                <div class="film-info">
+                    <div class="film-meta-top">
+                        <span>Architectural Film</span>
+                        <span>2025</span>
+                    </div>
+                    <h2 class="film-name font-serif">Casa Sereno</h2>
+                    <p class="film-desc">
+                        There is no rush in this film.
+                        Time stretches, light drifts, and spaces remain unspoken for just long enough. The camera
+                        listens more than it looks, allowing the house to reveal itself through silence, warmth, and
+                        restraint.
+                        The architecture is shaped by calm decisions—where materials breathe, daylight lingers, and
+                        interiors hold a sense of quiet assurance. The film listens closely to these moments, allowing
+                        silence, shadow, and proportion to guide the narrative. Here, luxury is not excess, but ease.
+                        Through careful pacing and restrained movement, the camera becomes a witness rather than a
+                        guide. It traces the subtle dialogue between inside and outside, between texture and touch,
+                        between structure and softness.
+                        I shaped the film through planning, direction, shot design, and editing, composing it as a slow
+                        spatial passage rather than a statement. Each frame is held long enough to be felt.
+                        Casa Sereno is not a portrait of a house, but of a state of mind—where architecture rests, and
+                        time slows.
+                    </p>
+                    <div class="film-roles">
+                        <span class="role-tag">EDITING</span>
+                        <span class="role-tag">CINEMATOGRAPHY</span>
+                        <span class="role-tag">DIRECTION</span>
+                        <span class="role-tag">POST PRODUCTION</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Film Item 3 -->
+            <!-- Film Item 3 -->
+            <div class="film-block" id="nocturne">
+                <div class="film-visual" data-cursor="video" data-youtube-id="DYXCu04G_zo">
+                    <!-- Placeholder: Abstract/Artistic Shot -->
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\film3.png" alt="Short Film Series">
+                </div>
+                <div class="film-info">
+                    <div class="film-meta-top">
+                        <span>Architectural Film</span>
+                        <span>2025</span>
+                    </div>
+                    <h2 class="film-name font-serif">CASA SERENO - NOCTURNE</h2>
+                    <p class="film-desc">
+                        As night settles in, artificial light reshapes the space—drawing out shadows, reflections, and a
+                        quieter intimacy.
+                        The architecture turns inward, guided by contrast, glow, and controlled darkness rather than
+                        openness.
+                        I led the direction, planning, cinematography, editing, and post-production, shaping the film as
+                        a slow, deliberate nocturnal study.
+                        In this state, the house feels less observed and more lived in—held gently by the night.
+                    </p>
+                    <div class="film-roles">
+                        <span class="role-tag">DIRECTION</span>
+                        <span class="role-tag">CINEMATOGRAPHY</span>
+                        <span class="role-tag">EDITING & SFX</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Film Item 4 -->
+            <!-- Film Item 4 -->
+            <div class="film-block" id="three-dot">
+                <div class="film-visual" data-cursor="video" data-youtube-id="LRdYXmMP4o0">
+                    <!-- Placeholder: Replace with your image -->
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\film4.png" alt="The Three Dot">
+                </div>
+                <div class="film-info">
+                    <div class="film-meta-top">
+                        <span>Diploma Film</span>
+                        <span>2025</span>
+                    </div>
+                    <h2 class="film-name font-serif">The Three Dot</h2>
+                    <p class="film-desc">
+                        The Three Dot is a short film developed as an exercise in restraint and visual clarity.
+                        Conceived and executed by me as writer, cinematographer, editor, and graphic designer, the
+                        project explores how narrative can emerge through pacing, framing, and visual rhythm rather than
+                        dialogue alone. The film reflects my interest in controlled storytelling and end-to-end
+                        authorship.
+                    </p>
+                    <div class="film-roles">
+                        <span class="role-tag">WRITER</span>
+                        <span class="role-tag">CINEMATOGRAPHER</span>
+                        <span class="role-tag">EDITOR</span>
+                        <span class="role-tag">GRAPHIC DESIGNER</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- SHORT FORMAT SECTION -->
+        <section class="shorts-section">
+            <div class="section-head">
+                <h2 class="font-serif">Short Format</h2>
+                <p class="text-uppercase tracking-wide text-muted" style="font-size:0.7rem">Reels / Stories / Vertical
+                </p>
+            </div>
+
+            <div class="shorts-grid">
+
+                <!-- Short 1 -->
+                <div class="short-card" data-cursor="video" data-youtube-id="2OsMWWdSCJU" data-mode="portrait">
+                    <div class="short-visual">
+                        <!-- Placeholder: Portrait Fashion -->
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop"
+                            alt="Short 1">
+                    </div>
+                    <div class="short-overlay">
+                        <h3 class="short-title font-serif">Space & Poetic</h3>
+                        <p class="short-role">Cinematography/Editing / Grade</p>
+                    </div>
+                </div>
+
+                <!-- Short 2 -->
+                <div class="short-card" data-cursor="video" data-youtube-id="1617TIogltg" data-mode="portrait">
+                    <div class="short-visual">
+                        <!-- Placeholder: Portrait Dance/Motion -->
+                        <img src="https://images.unsplash.com/photo-1504198458649-3128b932f49e?q=80&w=800&auto=format&fit=crop"
+                            alt="Short 2">
+                    </div>
+                    <div class="short-overlay">
+                        <h3 class="short-title font-serif">Textures</h3>
+                        <p class="short-role">Cinematography/Editing / Grade</p>
+                    </div>
+                </div>
+
+                <!-- Short 3 -->
+                <div class="short-card" data-cursor="video" data-youtube-id="A4fig7WQOaE" data-mode="portrait">
+                    <div class="short-visual">
+                        <!-- Placeholder: Portrait Lifestyle -->
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop"
+                            alt="Short 3">
+                    </div>
+                    <div class="short-overlay">
+                        <h3 class="short-title font-serif">The Atelier</h3>
+                        <p class="short-role">Cinematography/Editing / Grade</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- VIDEO PLAYER MODAL -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-container">
+            <div class="close-btn">[ CLOSE ]</div>
+            <iframe id="videoFrame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
     </div>
-</nav>
 
-<div class="menu-overlay">
-    <div class="menu-links">
-        <a href="photographs.html">Photographs</a>
-        <a href="films.html">Films</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-    </div>
-</div>
+    <!-- SCRIPTS -->
+    <script>
+        // 1. Initialize Smooth Scroll
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
 
-<main class="films-container">
+        // 2. Reveal on Scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.film-block').forEach(el => observer.observe(el));
 
-<div class="film-item" data-cursor="hover">
-    <div class="film-title">Film One</div>
-    <div class="video-wrapper" data-youtube-id="Af30_dzcsfM">
-        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1600">
-        <div class="play-button"></div>
-    </div>
-</div>
+        // 3. Navigation
+        const menuBtn = document.querySelector('.menu-btn');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
 
-<div class="film-item" data-cursor="hover">
-    <div class="film-title">Film Two</div>
-    <div class="video-wrapper" data-youtube-id="DYXCu04G_zo">
-        <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=1600">
-        <div class="play-button"></div>
-    </div>
-</div>
+        // 4. Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
-<div class="film-item" data-cursor="hover">
-    <div class="film-title">Film Three</div>
-    <div class="video-wrapper" data-youtube-id="CQ1N7_YZ5oA">
-        <img src="https://images.unsplash.com/photo-1518134558225-c546059d453b?q=80&w=1600">
-        <div class="play-button"></div>
-    </div>
-</div>
+        // Hover Effects
+        document.querySelectorAll('[data-cursor="hover"]').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+        document.querySelectorAll('[data-cursor="video"]').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('video-hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('video-hover'));
+        });
 
-</main>
+        // 5. Video Modal Logic
+        const modal = document.querySelector('.video-modal');
+        const frame = document.getElementById('videoFrame');
+        const closeBtn = document.querySelector('.close-btn');
 
-<div class="video-modal" id="videoModal">
-    <div class="modal-content">
-        <div class="close-modal">Close [x]</div>
-        <iframe id="youtube-frame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
-</div>
+        document.querySelectorAll('[data-youtube-id]').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const id = trigger.dataset.youtubeId;
+                const mode = trigger.dataset.mode;
 
-<script>
-// PRELOADER
-let count = 0;
-const counter = document.querySelector('.loader-counter');
-const interval = setInterval(()=>{
-    count++;
-    counter.textContent = `${count} / 100`;
-    if(count >= 100){
-        clearInterval(interval);
-        document.body.classList.add('loaded');
-    }
-},15);
+                // Switch modal Aspect Ratio based on content type
+                if (mode === 'portrait') {
+                    modal.classList.add('shorts-mode');
+                } else {
+                    modal.classList.remove('shorts-mode');
+                }
 
-// SCROLL
-const observer = new IntersectionObserver(entries=>{
-    entries.forEach(e=>e.isIntersecting && e.target.classList.add('visible'));
-},{threshold:0.1});
-document.querySelectorAll('.film-item').forEach(el=>observer.observe(el));
+                frame.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&showinfo=0`;
+                modal.classList.add('active');
+            });
+        });
 
-// MENU
-const menuBtn = document.querySelector('.menu-btn');
-const menu = document.querySelector('.menu-overlay');
-menuBtn.onclick = ()=>{ menuBtn.classList.toggle('active'); menu.classList.toggle('active'); };
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-// MODAL VIDEO
-const wrappers = document.querySelectorAll('.video-wrapper');
-const modal = document.getElementById('videoModal');
-const iframe = document.getElementById('youtube-frame');
-const closeBtn = document.querySelector('.close-modal');
+        function closeModal() {
+            modal.classList.remove('active');
+            // Slight delay to clear src so sound stops
+            setTimeout(() => { frame.src = ''; }, 300);
+        }
 
-wrappers.forEach(w=>{
-    w.onclick = ()=>{
-        const id = w.dataset.youtubeId;
-        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-        modal.classList.add('active');
-    };
-});
-function closeVideo(){
-    modal.classList.remove('active');
-    setTimeout(()=>iframe.src='',300);
-}
-closeBtn.onclick = closeVideo;
-modal.onclick = e=> e.target===modal && closeVideo();
+        // 6. Preloader Logic
+        const counterEl = document.querySelector('.loader-counter');
+        let count = 0;
 
-// CURSOR
-const cursor = document.querySelector('.cursor');
-document.addEventListener('mousemove',e=>{
-    cursor.style.left=e.clientX+'px';
-    cursor.style.top=e.clientY+'px';
-});
-document.querySelectorAll('[data-cursor="hover"]').forEach(el=>{
-    el.onmouseenter=()=>cursor.classList.add('hovered');
-    el.onmouseleave=()=>cursor.classList.remove('hovered');
-});
-</script>
+        const loaderInterval = setInterval(() => {
+            count++;
+            counterEl.textContent = `${count} / 100`;
+            if (count >= 100) {
+                clearInterval(loaderInterval);
+                document.body.classList.add('loaded'); // Liftoff curtain
+                setTimeout(() => document.body.classList.add('ready'), 500); // Reveal content opacity
+            }
+        }, 20);
 
+        // 5. AUTO-PLAY FROM URL (Deep Linking)
+        window.addEventListener('load', () => {
+            const hash = window.location.hash.substring(1); // Get 'spilaio', 'casa-sereno', etc.
+            if (hash) {
+                const targetBlock = document.getElementById(hash);
+                if (targetBlock) {
+                    // Scroll to the film
+                    setTimeout(() => {
+                        lenis.scrollTo(targetBlock, { offset: -100 });
+
+                        // Open the video automatically
+                        const visual = targetBlock.querySelector('.film-visual');
+                        if (visual) {
+                            visual.click();
+                        }
+                    }, 1000); // Small delay to ensure page is ready
+                }
+            }
+        });
+
+    </script>
 </body>
+
 </html>
