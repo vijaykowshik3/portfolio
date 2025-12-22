@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | Vijay Kowshik</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
 
     <style>
         /* --- CORE STYLES --- */
@@ -16,68 +19,236 @@
             --ease-luxury: cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        
-        body { 
-            background-color: #fff; /* White background as per video */
-            color: #111; 
-            font-family: 'Montserrat', sans-serif; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            background-color: #fff;
+            /* White background as per video */
+            color: #111;
+            font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
         }
-        
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
-        
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
         /* --- CUSTOM CURSOR --- */
         .cursor {
-            width: 40px; height: 40px;
-            border: 1px solid rgba(0, 0, 0, 0.2); /* Dark border for white bg */
+            width: 40px;
+            height: 40px;
+            border: 1px solid #fff;
+            /* White border inverts to Black on White BG */
             border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9999;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
             transform: translate(-50%, -50%);
             transition: transform 0.1s ease, width 0.3s, height 0.3s;
-            mix-blend-mode: difference; /* Ensures visibility on black & white */
+            mix-blend-mode: difference;
         }
-        .cursor.hovered { background-color: rgba(0, 0, 0, 0.1); width: 60px; height: 60px; }
 
-        /* --- PRELOADER (Perfect Circle) --- */
+        .cursor.hovered {
+            background-color: #fff;
+            /* White fill inverts to Black on White BG */
+            width: 60px;
+            height: 60px;
+            opacity: 1;
+        }
+
+        /* --- PRELOADER --- */
         .preloader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #fff;
+            position: fixed;
+            inset: 0;
+            background: #000;
             z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        
-        .loader-circle {
-            width: 300px; height: 300px;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 50%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        
-        .loader-title { font-family: 'Montserrat', sans-serif; font-weight: 200; font-size: 1.5rem; letter-spacing: 3px; text-transform: uppercase; }
-        .loader-counter { margin-top: 15px; font-size: 0.9rem; letter-spacing: 2px; color: #555; }
 
-        body.loaded .preloader { transform: translateY(-100%); }
+            /* Background Animation */
+            background: radial-gradient(circle, #151515 0%, #000000 70%);
+            background-size: 150% 150%;
+            animation: loaderPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes loaderPulse {
+            0% {
+                background-position: 50% 50%;
+                opacity: 1;
+            }
+
+            50% {
+                background-position: 50% 40%;
+                opacity: 0.95;
+            }
+
+            100% {
+                background-position: 50% 50%;
+                opacity: 1;
+            }
+        }
+
+        body.loaded .preloader {
+            transform: translateY(-100%);
+        }
+
+        .loader-circle {
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Rotating Ring Effect */
+        .loader-circle::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.3);
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 200;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            /* Standard Size */
+            color: #fff;
+        }
+
+        .loader-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .loader-counter {
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #888;
+        }
 
         /* --- NAVIGATION --- */
-        nav { position: fixed; top: 0; width: 100%; padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; z-index: 500; mix-blend-mode: difference; }
-        .logo { font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; color: #fff; } /* Color trick for mix-blend */
-        
-        .menu-btn { width: 35px; height: 24px; display: flex; flex-direction: column; justify-content: space-between; z-index: 500; }
-        .menu-btn .line { width: 100%; height: 1px; background: #fff; transition: all 0.4s ease; }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 500;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        /* Color trick for mix-blend */
+
+        .menu-btn {
+            width: 35px;
+            height: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 500;
+        }
+
+        .menu-btn .line {
+            width: 100%;
+            height: 1px;
+            background: #fff;
+            transition: all 0.4s ease;
+        }
 
         /* MENU OVERLAY */
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #080808; z-index: 400; transform: translateX(100%); transition: transform 0.8s var(--ease-luxury); display: flex; flex-direction: column; justify-content: center; padding-left: 10%; }
-        .menu-overlay.active { transform: translateX(0); }
-        .menu-links a { font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 100; color: #444; text-transform: uppercase; letter-spacing: 5px; display: inline-block; margin: 10px 0; transition: 0.3s; }
-        .menu-links a:hover { color: #fff; padding-left: 20px; }
-        
-        .menu-btn.active .line:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
-        .menu-btn.active .line:nth-child(2) { opacity: 0; }
-        .menu-btn.active .line:nth-child(3) { transform: rotate(-45deg) translate(8px, -8px); }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #080808;
+            z-index: 400;
+            transform: translateX(100%);
+            transition: transform 0.8s var(--ease-luxury);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 10%;
+        }
+
+        .menu-overlay.active {
+            transform: translateX(0);
+        }
+
+        .menu-links a {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 100;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            display: inline-block;
+            margin: 10px 0;
+            transition: 0.3s;
+        }
+
+        .menu-links a:hover {
+            color: #fff;
+            padding-left: 20px;
+        }
+
+        .menu-btn.active .line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .menu-btn.active .line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-btn.active .line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
 
         /* --- ABOUT PAGE LAYOUT --- */
         .smooth-scroll-wrapper {
@@ -105,7 +276,8 @@
             color: #888;
             margin-bottom: 30px;
             display: block;
-            text-align: center; /* Centered like video */
+            text-align: center;
+            /* Centered like video */
         }
 
         .page-title {
@@ -141,7 +313,7 @@
             filter: grayscale(100%);
             transition: 0.7s;
         }
-        
+
         .about-image:hover img {
             filter: grayscale(0%);
         }
@@ -149,7 +321,8 @@
         /* Bio Text */
         .bio-text {
             width: 50%;
-            padding-top: 50px; /* Slight offset from top like video */
+            padding-top: 50px;
+            /* Slight offset from top like video */
         }
 
         .bio-text p {
@@ -181,7 +354,10 @@
             color: #111;
             opacity: 0.6;
         }
-        .social-icons a:hover { opacity: 1; }
+
+        .social-icons a:hover {
+            opacity: 1;
+        }
 
         /* --- JOURNEY & AWARDS SECTION (Bottom) --- */
         .journey-section {
@@ -225,23 +401,52 @@
             text-transform: uppercase;
             border-bottom: 1px solid #eee;
         }
-        
-        .award-item:last-child { border-bottom: none; }
+
+        .award-item:last-child {
+            border-bottom: none;
+        }
 
         /* Responsive */
         @media(max-width: 768px) {
-            nav { padding: 20px; }
-            .about-content { flex-direction: column; }
-            .about-image { width: 100%; margin-bottom: 50px; }
-            .bio-text { width: 100%; padding-top: 0; }
-            .page-title { font-size: 2rem; margin-bottom: 50px; }
-            .loader-circle { width: 220px; height: 220px; }
-            .menu-links a { font-size: 2rem; }
-            .cursor { display: none; }
-        }
+            nav {
+                padding: 20px;
+            }
 
+            .about-content {
+                flex-direction: column;
+            }
+
+            .about-image {
+                width: 100%;
+                margin-bottom: 50px;
+            }
+
+            .bio-text {
+                width: 100%;
+                padding-top: 0;
+            }
+
+            .page-title {
+                font-size: 2rem;
+                margin-bottom: 50px;
+            }
+
+            .loader-circle {
+                width: 220px;
+                height: 220px;
+            }
+
+            .menu-links a {
+                font-size: 2rem;
+            }
+
+            .cursor {
+                display: none;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <!-- CUSTOM CURSOR -->
@@ -251,7 +456,7 @@
     <div class="preloader">
         <div class="loader-circle">
             <div class="loader-title">Vijay Kowshik</div>
-            <div class="loader-title" style="font-size: 0.7rem; margin-top: 5px;">About</div>
+            <div class="loader-subtitle">About</div>
             <div class="loader-counter">0 / 100</div>
         </div>
     </div>
@@ -260,7 +465,7 @@
     <nav>
         <div class="logo">
             <a href="index.html">Vijay Kowshik</a>
-            <span>PHOTOGRAPHY</span>
+            <span>Filmmaker/ Editor/ Cinematographer</span>
         </div>
         <div class="menu-btn" data-cursor="hover">
             <span class="line"></span><span class="line"></span><span class="line"></span>
@@ -272,7 +477,7 @@
         <ul class="menu-links">
             <li><a href="photographs.html" data-cursor="hover">Photographs</a></li>
             <li><a href="films.html" data-cursor="hover">Films</a></li>
-            <li><a href="personal.html" data-cursor="hover">Personal</a></li>
+            <li><a href="resume.html" data-cursor="hover">Resume</a></li>
             <li><a href="about.html" data-cursor="hover">About</a></li>
             <li><a href="contact.html" data-cursor="hover">Contact</a></li>
         </ul>
@@ -280,7 +485,7 @@
 
     <!-- MAIN CONTENT -->
     <div class="about-wrapper">
-        
+
         <span class="section-label">About</span>
         <h1 class="page-title">Vijay Kowshik</h1>
 
@@ -293,12 +498,32 @@
 
             <!-- Right: Bio -->
             <div class="bio-text">
-                <p>I grew up with a quiet obsession for creation—its discipline, its mystery, and the way it allows us to shape meaning out of nothing. My path has moved through cinematography, writing, design, technology, and visual strategy, not because I wanted to collect skills, but because each one opened a new doorway into the act of making. That urge has always been the constant: finding a way to create, in any form possible.</p>
-                <p>My training in cinematography and my background in information technology form an unusual pairing, yet they taught me to see structure and emotion with the same clarity. Over the years, I’ve written stories, directed and edited films, and crafted architectural videos that were entirely my own—from the first spark of an idea to the final frame on screen. I also shape the visual and social media presence for a design firm, translating its identity into a consistent, expressive digital language.</p>
-                <p>What guides my work is a deep sensitivity to detail. A single frame can hold psychology, intention, ego, and silence; I spend time understanding why it exists at all. I look for design in everything—nature, code, materials, daily gestures—because patterns repeat across the world if we pay attention. That awareness shapes my aesthetic and fuels the joy I find in creating.Over the years, I’ve become fluent with tools that help me express this vision: color grading, editing, visual effects, photo development, and 3D exploration in software such as Premiere Pro, After Effects, DaVinci Resolve, Photoshop, InDesign, Darktable, and Blender. Each tool is simply another extension of that original instinct to build, refine, and give form to an idea.At my core, I am someone who creates because I must—because it is the one act that feels both natural and necessary. Everything I pursue, every skill I cultivate, comes from the same place: the joy of bringing something into existence that wasn’t there before.</p>
-                
+                <p>I grew up with a quiet obsession for creation—its discipline, its mystery, and the way it allows us
+                    to shape meaning out of nothing. My path has moved through cinematography, writing, design,
+                    technology, and visual strategy, not because I wanted to collect skills, but because each one opened
+                    a new doorway into the act of making. That urge has always been the constant: finding a way to
+                    create, in any form possible.</p>
+                <p>My training in cinematography and my background in information technology form an unusual pairing,
+                    yet they taught me to see structure and emotion with the same clarity. Over the years, I’ve written
+                    stories, directed and edited films, and crafted architectural videos that were entirely my own—from
+                    the first spark of an idea to the final frame on screen. I also shape the visual and social media
+                    presence for a design firm, translating its identity into a consistent, expressive digital language.
+                </p>
+                <p>What guides my work is a deep sensitivity to detail. A single frame can hold psychology, intention,
+                    ego, and silence; I spend time understanding why it exists at all. I look for design in
+                    everything—nature, code, materials, daily gestures—because patterns repeat across the world if we
+                    pay attention. That awareness shapes my aesthetic and fuels the joy I find in creating.Over the
+                    years, I’ve become fluent with tools that help me express this vision: color grading, editing,
+                    visual effects, photo development, and 3D exploration in software such as Premiere Pro, After
+                    Effects, DaVinci Resolve, Photoshop, InDesign, Darktable, and Blender. Each tool is simply another
+                    extension of that original instinct to build, refine, and give form to an idea.At my core, I am
+                    someone who creates because I must—because it is the one act that feels both natural and necessary.
+                    Everything I pursue, every skill I cultivate, comes from the same place: the joy of bringing
+                    something into existence that wasn’t there before.</p>
+
                 <div class="contact-info">
-                    <a href="mailto:vijaykowshik3@gmail.com" class="contact-email" data-cursor="hover">mail to :vijaykowshik3@gmail.com</a>
+                    <a href="mailto:vijaykowshik3@gmail.com" class="contact-email" data-cursor="hover">mail to
+                        :vijaykowshik3@gmail.com</a>
                     <div class="social-icons">
                         <a href="#" data-cursor="hover">INSTAGRAM</a>
                         <a href="#" data-cursor="hover">LINKEDIN</a>
@@ -332,7 +557,7 @@
             let interval = setInterval(() => {
                 count++;
                 counterElement.innerText = `${count} / 100`;
-                
+
                 if (count >= 100) {
                     clearInterval(interval);
                     setTimeout(() => {
@@ -365,9 +590,9 @@
             const scrollY = window.scrollY;
             const image = document.querySelector('.about-image');
             const text = document.querySelector('.bio-text');
-            
+
             // Move image slower than text to create depth
-            if(window.innerWidth > 768) {
+            if (window.innerWidth > 768) {
                 image.style.transform = `translateY(${scrollY * 0.1}px)`; // Slow
                 text.style.transform = `translateY(${scrollY * -0.05}px)`; // Reverse slightly
             }
@@ -386,4 +611,5 @@
         });
     </script>
 </body>
+
 </html>
