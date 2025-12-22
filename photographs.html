@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vijay Kowshik | Filmmaker & Photographer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. GLOBAL RESET & BASICS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hides default cursor */
+        }
+
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- 2. CUSTOM CURSOR --- */
+        .cursor {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, width 0.3s, height 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hovered {
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 60px;
+            height: 60px;
+            border-color: #fff;
+        }
+
+        /* --- 3. PRELOADER (Perfect Circle) --- */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .loader-circle {
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 200;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .loader-counter {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        /* Slide curtain up when loaded */
+        body.loaded .preloader {
+            transform: translateY(-100%);
+        }
+
+        /* --- 4. NAVIGATION BAR --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 0.6rem;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        .menu-btn {
+            width: 35px;
+            height: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 200;
+        }
+
+        .menu-btn .line {
+            width: 100%;
+            height: 1px;
+            background: #fff;
+            transition: all 0.4s ease;
+        }
+
+        /* --- 5. FULL SCREEN MENU --- */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #080808;
+            z-index: 150;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 10%;
+        }
+
+        .menu-overlay.active {
+            transform: translateX(0);
+        }
+
+        .menu-links a {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 100;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            transition: color 0.3s, padding-left 0.3s;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .menu-links a:hover {
+            color: #fff;
+            padding-left: 20px;
+        }
+
+        .menu-btn.active .line:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
+        .menu-btn.active .line:nth-child(2) { opacity: 0; }
+        .menu-btn.active .line:nth-child(3) { transform: rotate(-45deg) translate(8px, -8px); }
+
+        /* --- 6. MAIN GALLERY --- */
+        main {
+            padding: 150px 50px 50px 50px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease 1s, transform 1s ease 1s;
+        }
+
+        body.loaded main {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 60px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+
+        /* Push right column down for staggered look */
+        .gallery-grid .gallery-item:nth-child(even) {
+            margin-top: 100px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%);
+            transition: filter 0.6s ease, transform 0.8s ease;
+        }
+
+        .gallery-item:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.03);
+        }
+
+        .caption {
+            margin-top: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: 0.5s ease;
+        }
+
+        .gallery-item:hover .caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .caption span {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #666;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            main { padding: 100px 20px 20px 20px; }
+            .gallery-grid { grid-template-columns: 1fr; gap: 40px; }
+            .gallery-grid .gallery-item:nth-child(even) { margin-top: 0; }
+            .menu-links a { font-size: 2rem; }
+            .cursor { display: none; }
+            .loader-circle { width: 220px; height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. CUSTOM CURSOR -->
+    <div class="cursor"></div>
+
+    <!-- 2. PRELOADER -->
+    <div class="preloader">
+        <div class="loader-circle">
+            <div class="loader-text">Vijay Kowshik</div>
+            <div class="loader-counter">0 / 100</div>
+        </div>
+    </div>
+
+    <!-- 3. NAVIGATION -->
+    <nav>
+        <div class="logo">
+            <a href="index.html">Vijay Kowshik</a>
+            <span>Visual Designer</span>
+        </div>
+        
+        <div class="menu-btn" data-cursor="hover">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+        </div>
+    </nav>
+
+    <!-- 4. MENU OVERLAY -->
+    <div class="menu-overlay">
+        <ul class="menu-links">
+            <li><a href="photographs.html" data-cursor="hover">Photographs</a></li>
+            <li><a href="films.html" data-cursor="hover">Films</a></li>
+            <li><a href="about.html" data-cursor="hover">About</a></li>
+            <li><a href="contact.html" data-cursor="hover">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- 5. MAIN GALLERY CONTENT -->
+    <main>
+        <div class="gallery-grid">
+            
+            <!-- Item 1 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo1.jpg" alt="Art 1">
+                <div class="caption">
+                    L'affaire Editorial
+                    <span>Fashion</span>
+                </div>
+            </a>
+
+            <!-- Item 2 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo2.jpg" alt="Portrait 1">
+                <div class="caption">
+                    Nicobar x Aparna
+                    <span>Advertising</span>
+                </div>
+            </a>
+
+            <!-- Item 3 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo3.jpg" alt="Sabyasachi">
+                <div class="caption">
+                    Sabyasachi
+                    <span>Couture</span>
+                </div>
+            </a>
+
+            <!-- Item 4 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo4.jpg" alt="Monochrome">
+                <div class="caption">
+                    The Dark Beauty
+                    <span>Personal</span>
+                </div>
+            </a>
+
+            <!-- Item 5 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo5.jpg" alt="Vogue">
+                <div class="caption">
+                    Vogue India
+                    <span>Cover Story</span>
+                </div>
+            </a>
+
+            <!-- Item 6 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo6.jpg" alt="Heritage">
+                <div class="caption">
+                    Royal Heritage
+                    <span>Editorial</span>
+                </div>
+            </a>
+
+            <!-- Item 7 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo7.jpg" alt="Portrait 2">
+                <div class="caption">
+                    Studio Series
+                    <span>Advertising</span>
+                </div>
+            </a>
+
+            <!-- Item 8 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo8.jpg" alt="Sabyasachi 2">
+                <div class="caption">
+                    Bridal Collection
+                    <span>Couture</span>
+                </div>
+            </a>
+
+            <!-- Item 9 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo9.jpg" alt="Monochrome 2">
+                <div class="caption">
+                    Shadow Play
+                    <span>Personal</span>
+                </div>
+            </a>
+
+            <!-- Item 10 -->
+            <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <!-- Using photo5 again as an example, replace with photo10.jpg if you have it -->
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo10.jpg" alt="Vogue 2">
+                <div class="caption">
+                    Summer Edit
+                    <span>Cover Story</span>
+                </div>
+            </a>
+
+             <!-- Item 11 -->
+             <a href="fashion.html" class="gallery-item" data-cursor="hover">
+                <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo11.jpg" alt="Vogue 3">
+                <div class="caption">
+                    Winter Edit
+                    <span>Cover Story</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- 6. SCRIPTS -->
+    <script>
+        // --- PRELOADER LOGIC ---
+        const counterElement = document.querySelector('.loader-counter');
+        const preloader = document.querySelector('.preloader');
+        let count = 0;
+
+        function startLoader() {
+            let interval = setInterval(() => {
+                count++;
+                counterElement.innerText = `${count} / 100`;
+                
+                if (count >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.body.classList.add('loaded');
+                    }, 200);
+                }
+            }, 15);
+        }
+
+        // Run immediately
+        startLoader();
+
+        // --- MENU TOGGLE LOGIC ---
+        const menuBtn = document.querySelector('.menu-btn');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        const menuLinks = document.querySelectorAll('.menu-links a');
+
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuBtn.classList.remove('active');
+                menuOverlay.classList.remove('active');
+            });
+        });
+
+        // --- CUSTOM CURSOR LOGIC ---
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        const hoverElements = document.querySelectorAll('[data-cursor="hover"]');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vijay Kowshik | Filmmaker & Photographer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* --- 1. SETTINGS & RESET --- */
+        :root {
+            --ease-luxury: cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #050505; 
+            color: #e0e0e0; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; /* No scrolling */
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- 2. CUSTOM CURSOR --- */
+        .cursor {
+            width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: transform 0.1s ease, width 0.3s, height 0.3s;
+            mix-blend-mode: difference;
+        }
+        .cursor.hovered { background-color: rgba(255, 255, 255, 0.2); width: 60px; height: 60px; border-color: #fff; }
+
+        /* --- 3. CIRCULAR PRELOADER --- */
+        .preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff;
+            transition: transform 1.5s var(--ease-luxury), border-radius 1s ease-in;
+        }
+        
+        .loader-container { position: relative; width: 320px; height: 320px; display: flex; justify-content: center; align-items: center; }
+        .progress-ring { position: absolute; top: 0; left: 0; width: 320px; height: 320px; transform: rotate(-90deg); }
+        .progress-ring__circle { transition: stroke-dashoffset 0.1s linear; transform-origin: 50% 50%; }
+
+        .loader-content { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; }
+        .loader-text { font-family: 'Montserrat', sans-serif; font-weight: 200; font-size: 2rem; letter-spacing: 4px; text-transform: uppercase; text-align: center; }
+        .loader-counter { font-size: 0.8rem; letter-spacing: 3px; margin-top: 15px; color: #888; font-weight: 400; }
+        
+        body.loaded .preloader { 
+            transform: translateY(-120%); 
+            border-bottom-left-radius: 50% 20%;
+            border-bottom-right-radius: 50% 20%;
+        }
+
+        /* --- 4. NAVIGATION BAR --- */
+        nav { position: fixed; top: 0; width: 100%; padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; z-index: 500; mix-blend-mode: difference; }
+        .logo { font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase; }
+        .logo span { display: block; font-size: 0.6rem; opacity: 0.6; margin-top: 5px; letter-spacing: 1px; }
+        
+        .menu-btn { width: 40px; height: 20px; display: flex; flex-direction: column; justify-content: space-between; z-index: 500; cursor: pointer; }
+        .menu-btn .line { width: 100%; height: 1px; background: #fff; transition: all 0.5s var(--ease-luxury); }
+
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #0a0a0a; z-index: 400; transform: translateX(100%); transition: transform 0.8s var(--ease-luxury); display: flex; flex-direction: column; justify-content: center; padding-left: 10%; }
+        .menu-overlay.active { transform: translateX(0); }
+        .menu-links li { overflow: hidden; margin: 5px 0; }
+        .menu-links a { font-family: 'Montserrat', sans-serif; font-size: 4rem; font-weight: 100; color: #333; text-transform: uppercase; letter-spacing: 5px; display: inline-block; transform: translateY(100%); transition: transform 0.5s var(--ease-luxury) 0.2s, color 0.3s; }
+        .menu-overlay.active .menu-links a { transform: translateY(0); }
+        .menu-links a:hover { color: #fff; padding-left: 20px; }
+        .menu-btn.active .line:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .menu-btn.active .line:nth-child(2) { opacity: 0; }
+        .menu-btn.active .line:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        /* --- 5. THE SLIDER (FULL SCREEN FIX) --- */
+        .swiper { 
+            width: 100%; 
+            height: 100%; /* Ensures it fills body */
+            opacity: 0; 
+            transition: opacity 2s ease 1s;
+        }
+        body.loaded .swiper { opacity: 1; }
+
+        .swiper-slide {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* Container specifically for the Parallax effect */
+        .parallax-bg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 130%; /* MUST be larger than 100% for parallax to work */
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            /* Default fallback if image fails to load */
+            background-color: #111; 
+        }
+
+        /* Using IMG tag inside the parallax container for better control */
+        .parallax-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* This makes it full screen */
+            object-position: center;
+            display: block;
+            filter: brightness(0.9);
+        }
+
+        /* COUNTER & BUTTONS */
+        .slide-counter {
+            position: absolute; bottom: 50px; right: 60px;
+            font-family: 'Playfair Display', serif; color: #fff; font-size: 1rem; letter-spacing: 3px;
+            border-top: 1px solid rgba(255,255,255,0.3); padding-top: 10px; z-index: 50;
+            mix-blend-mode: difference;
+        }
+
+        .nav-arrows {
+            position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 60px; z-index: 50; pointer-events: none;
+            transform: translateY(-50%);
+        }
+        
+        .nav-btn {
+            width: 80px; height: 80px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; pointer-events: all;
+            transition: 0.5s var(--ease-luxury); cursor: none; background: transparent;
+            mix-blend-mode: difference;
+        }
+        
+        .nav-btn:hover { border-color: #fff; transform: scale(1.1); background: rgba(255,255,255,0.1); }
+        .nav-btn svg { width: 25px; fill: none; stroke: #fff; stroke-width: 1.5; transition: 0.3s; }
+
+        @media (max-width: 768px) {
+            .nav-arrows { display: none; }
+            .slide-counter { bottom: 30px; right: 30px; }
+            .cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor"></div>
+
+    <!-- PRELOADER -->
+    <div class="preloader">
+        <div class="loader-container">
+            <svg class="progress-ring" width="320" height="320">
+                <circle class="progress-ring__bg" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="transparent" r="158" cx="160" cy="160"/>
+                <circle class="progress-ring__circle" stroke="white" stroke-width="2" fill="transparent" r="158" cx="160" cy="160"/>
+            </svg>
+            <div class="loader-content">
+                <div class="loader-text">Vijay Kowshik</div>
+                <div class="loader-counter">0 / 100</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <a href="index.html">Vijay Kowshik</a>
+            <span>PHOTOGRAPHY</span>
+        </div>
+        <div class="menu-btn" data-cursor="hover">
+            <span class="line"></span><span class="line"></span><span class="line"></span>
+        </div>
+    </nav>
+
+    <!-- MENU OVERLAY -->
+    <div class="menu-overlay">
+        <ul class="menu-links">
+            <li><a href="photographs.html" data-cursor="hover">Photographs</a></li>
+            <li><a href="films.html" data-cursor="hover">Films</a></li>
+            <li><a href="design.html" data-cursor="hover">Designs</a></li>
+            <li><a href="about.html" data-cursor="hover">About</a></li>
+            <li><a href="contact.html" data-cursor="hover">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- SLIDER -->
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            
+            <!-- SLIDE 1 -->
+            <div class="swiper-slide">
+                <!-- Parallax Wrapper: Moves Slower than slide -->
+                <div class="parallax-bg" data-swiper-parallax="50%">
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo1.jpg" alt="Slide 1" onerror="this.style.bordesr='5px solid red'">
+                </div>
+            </div>
+
+            <!-- SLIDE 2 -->
+            <div class="swiper-slide">
+                <div class="parallax-bg" data-swiper-parallax="50%">
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo2.jpg" alt="Slide 2" onerror="this.style.border='5px solid red'">
+                </div>
+            </div>
+
+            <!-- SLIDE 3 -->
+            <div class="swiper-slide">
+                <div class="parallax-bg" data-swiper-parallax="50%">
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo6.jpg" onerror="this.style.border='5px solid red'">
+                </div>
+            </div>
+
+            <!-- SLIDE 4 -->
+            <div class="swiper-slide">
+                <div class="parallax-bg" data-swiper-parallax="50%">
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo8.jpg" alt="Slide 4" onerror="this.style.border='5px solid red'">
+                </div>
+            </div>
+            
+             <!-- SLIDE 5 -->
+             <div class="swiper-slide">
+                <div class="parallax-bg" data-swiper-parallax="50%">
+                    <img src="C:\Users\Prabakaran\Desktop\PORTFOLIO ( VK)\IMAGES\Photo12.jpg" onerror="this.style.border='5px solid red'">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="nav-arrows">
+            <div class="nav-btn prev-btn" data-cursor="hover">
+                <svg viewBox="0 0 24 24"><path d="M20 12H4M4 12L10 18M4 12L10 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="nav-btn next-btn" data-cursor="hover">
+                <svg viewBox="0 0 24 24"><path d="M4 12H20M20 12L14 6M20 12L14 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+        </div>
+
+        <div class="slide-counter">I &nbsp;/&nbsp; V</div>
+    </div>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        // --- 1. PRELOADER ---
+        const circle = document.querySelector('.progress-ring__circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = circumference; 
+
+        function setProgress(percent) {
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        const counterElement = document.querySelector('.loader-counter');
+        let count = 0;
+        function startLoader() {
+            let interval = setInterval(() => {
+                count++;
+                counterElement.innerText = `${count} / 100`;
+                setProgress(count);
+                if (count >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => document.body.classList.add('loaded'), 500);
+                }
+            }, 20);
+        }
+        startLoader();
+
+        // --- 2. SWIPER CONFIG (SMOOTH PARALLAX) ---
+        function toRoman(num) {
+            const roman = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
+            let str = '';
+            for (let i of Object.keys(roman)) {
+                let q = Math.floor(num / roman[i]);
+                num -= q * roman[i];
+                str += i.repeat(q);
+            }
+            return str;
+        }
+
+        var swiper = new Swiper(".mySwiper", {
+            speed: 2000,           // 2 Seconds for Ultra Smoothness
+            parallax: true,        // KEY: This enables the smooth moving background
+            loop: true,
+            grabCursor: true,      // Shows hand icon
+            mousewheel: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: ".next-btn",
+                prevEl: ".prev-btn",
+            },
+            on: {
+                slideChange: function () {
+                    let total = this.slides.length - this.loopedSlides * 2;
+                    let current = this.realIndex + 1;
+                    let counter = document.querySelector('.slide-counter');
+                    if(counter) counter.innerHTML = `${toRoman(current)} &nbsp;/&nbsp; ${toRoman(total)}`;
+                }
+            }
+        });
+
+        // --- 3. UI INTERACTIONS ---
+        const menuBtn = document.querySelector('.menu-btn');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        menuBtn.addEventListener('click', () => { menuBtn.classList.toggle('active'); menuOverlay.classList.toggle('active'); });
+        
+        const cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', (e) => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+        document.querySelectorAll('[data-cursor="hover"]').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        });
+    </script>
+</body>
+</html>
